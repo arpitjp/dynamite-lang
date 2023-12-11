@@ -1,5 +1,7 @@
 package tokens
 
+import "fmt"
+
 type TokenType string
 
 type Token struct {
@@ -7,6 +9,10 @@ type Token struct {
 	Literal string
 	Ln int
 	Col int
+}
+
+func (tok *Token) Inspect() {
+	fmt.Printf("%d:%d\t%s (%s)\n", tok.Ln, tok.Col, tok.Type, tok.Literal)
 }
 
 const (
