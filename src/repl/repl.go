@@ -31,7 +31,7 @@ var PROMT = logger.Info(">> ")
 
 // REPL persists env values withing the same repl session
 func replMode() {
-	fmt.Println("Welcome to Dynamite REPL 👋")
+	fmt.Print("\nWelcome to Dynamite REPL 👋\n\n")
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf(PROMT)
