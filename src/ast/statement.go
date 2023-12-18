@@ -40,3 +40,16 @@ func(node *ReturnStatement) String() string {
 	return str.String()
 }
 func(node *ReturnStatement) statementNode() {}
+
+
+type ExpressionStatement struct {
+	Token tokens.Token
+	Expression Expression
+}
+func(node *ExpressionStatement) TokenLiteral() string {
+	return node.Token.Literal
+}
+func(node *ExpressionStatement) String() string {
+	return node.Expression.String()
+}
+func(node *ExpressionStatement) statementNode() {}

@@ -15,7 +15,7 @@ func(node *Program) TokenLiteral() string {
 func (node *Program) String() string {
 	var str strings.Builder
 	for _, stmt := range node.Statements {
-		str.WriteString(stmt.String() + "\n")
+		str.WriteString(stmt.String() + ";\n")
 	}
 	return str.String()
 }
