@@ -6,3 +6,6 @@ enable-git-hooks:
 # make run file=src/1.txt
 run:
 	go run src/main.go $(file)
+
+test:
+	go test ./...

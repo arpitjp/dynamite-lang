@@ -3,8 +3,11 @@ package lexer
 import (
 	"dynamite/src/constants"
 	"dynamite/src/env"
+	"dynamite/src/logger"
 	"dynamite/src/tokens"
+	"fmt"
 	"strings"
+
 	"golang.org/x/exp/utf8string"
 )
 
@@ -211,4 +214,24 @@ func isLetter(ch rune) bool {
 		return true
 	}
 	return false
+}
+
+func (l *Lexer) GetErrorLine(ln int, col int) string {
+	str := "\n"
+	lineStart := 0
+	for line := 0; line < ln-1 && lineStart < l.input.RuneCount()-1; lineStart++ {
+		if l.input.At(lineStart) == '\n' {
+			line++
+		}
+	}
+	lineEnd := lineStart
+	for l.input.At(lineEnd) != '\n' && lineEnd < l.input.RuneCount()-1 {
+		lineEnd++
+	}
+	str += logger.Warn(fmt.Sprintf("%d:%d\t", ln, col))
+	str += l.input.Slice(lineStart, lineEnd)
+	str += "\n\t"
+	str += strings.Repeat(" ", col-1)
+	str += logger.Warn("^")
+	return str
 }
