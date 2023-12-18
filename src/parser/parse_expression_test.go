@@ -35,3 +35,30 @@ func TestIdentifierExpression(t *testing.T) {
 		}
 	}
 }
+
+func TestIntegerExpression(t *testing.T) {
+	input := `5;`
+	expected := []int64{
+		5,
+	}
+
+	l := lexer.New(input)
+	p := New(l)
+	programNode := p.ParseProgram()
+
+	testProgramNode(t, 1, programNode, p)
+
+	for i, stmt := range programNode.Statements {
+		expStmt, ok := stmt.(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("Test[%d] failure: Expected stmt to be of type *ast.ExpressionStatement, but got %T", i, stmt)
+		}
+		integerExp, ok := expStmt.Expression.(*ast.IntegerExpressionNode)
+		if !ok {
+			t.Fatalf("Test[%d] failure: Expected expression to be of type *ast.IntegerExpressionNode, but got %T", i, expStmt.Expression)
+		}
+		if got := integerExp.Value; got != expected[i] {
+			t.Fatalf("Test[%d] failure: Expected exp value to be %q, but got %q", i, expected[i], got)
+		}
+	}
+}

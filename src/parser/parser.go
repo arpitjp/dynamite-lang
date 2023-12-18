@@ -28,6 +28,7 @@ func New(l *lexer.Lexer) *Parser {
 
 	// registering functions
 	p.registerPrefixParseFn(tokens.IDENT, p.parseIdentifierExpression)
+	p.registerPrefixParseFn(tokens.INT, p.parseIntegerExpressionNode)
 
 	// initializing both currToken and nextToken
 	p.NextToken()
