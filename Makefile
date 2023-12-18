@@ -3,7 +3,7 @@ enable-git-hooks:
 	chmod ug+x .githooks/*
 
 # make run
-# make run file=src/1.txt
+# make run file=docs/examples/hello
 run:
 	go run src/main.go $(file)
 
