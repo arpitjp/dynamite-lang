@@ -13,12 +13,21 @@ type Parser struct {
 	currToken tokens.Token
 	peekToken tokens.Token
 	errors []string
+	// pratt parser
+	// Rule: they start with their token and end with their token
+	prefixParseFns map[tokens.TokenType]prefixParseFn
+	infixParseFnx map[tokens.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
 	p :=  &Parser{
 		l: l,
+		prefixParseFns: make(map[tokens.TokenType]prefixParseFn),
+		infixParseFnx: make(map[tokens.TokenType]infixParseFn),
 	}
+
+	// registering functions
+	p.registerPrefixParseFn(tokens.IDENT, p.parseIdentifierExpression)
 
 	// initializing both currToken and nextToken
 	p.NextToken()
