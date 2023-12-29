@@ -27,10 +27,20 @@ func New(l *lexer.Lexer) *Parser {
 	}
 
 	// registering functions
+	// prefix
 	p.registerPrefixParseFn(tokens.IDENT, p.parseIdentifierExpression)
 	p.registerPrefixParseFn(tokens.INT, p.parseIntegerExpression)
 	p.registerPrefixParseFn(tokens.BANG, p.parsePrefixExpression)
 	p.registerPrefixParseFn(tokens.MINUS, p.parsePrefixExpression)
+	// infix
+	p.registerInfixParseFn(tokens.PLUS, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.MINUS, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.SLASH, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.ASTERISK, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.EQ, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.NOT_EQ, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.LT, p.parseInfixExpression) 
+	p.registerInfixParseFn(tokens.GT, p.parseInfixExpression)
 
 	// initializing both currToken and nextToken
 	p.NextToken()

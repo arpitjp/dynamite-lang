@@ -18,16 +18,6 @@ func (p *Parser) registerInfixParseFn(tok tokens.TokenType, f infixParseFn) {
 	p.infixParseFnx[tok] = f
 }
 
-const (
-	_ int = iota
-	LOWEST
-	EQUALS  // == LESSGREATER // > or <
-	SUM     // +
-	PRODUCT // *
-	PREFIX  // -X or !X
-	CALL    // myFunction(X)
-)
-
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefixFn := p.prefixParseFns[p.currToken.Type]
 	if prefixFn == nil {
@@ -35,6 +25,15 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 		return nil
 	}
 	leftExp := prefixFn()
+
+	for p.peekToken.Type != tokens.SEMICOLON && precedence < p.peekPrecedence() {
+		infixFn := p.infixParseFnx[p.peekToken.Type]
+		if infixFn == nil {
+			return leftExp
+		}
+		p.NextToken()
+		leftExp = infixFn(leftExp)
+	}
 
 	return leftExp
 }
@@ -68,5 +67,17 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	node.Operator = node.TokenLiteral()
 	p.NextToken()
 	node.Right = p.parseExpression(PREFIX)
+	return node
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	node := &ast.InfixExpressionNode{
+		Token: p.currToken,
+		Operator: p.currToken.Literal,
+		Left: left,
+	}
+	precedence := p.currPrecedence()
+	p.NextToken()
+	node.Right = p.parseExpression(precedence)
 	return node
 }

@@ -51,3 +51,28 @@ func (node *PrefixExpressionNode) String() string {
 	return str.String()
 }
 func (node *PrefixExpressionNode) expressionNode() {}
+
+type InfixExpressionNode struct {
+	Token tokens.Token // the infix or binary token, e.g. +, -
+	Left Expression
+	Operator string
+	Right Expression
+}
+
+func (node *InfixExpressionNode) TokenLiteral() string {
+	return node.Token.Literal
+}
+func (node *InfixExpressionNode) String() string {
+	var str strings.Builder
+
+	str.WriteString("(")
+	str.WriteString(node.Left.String())
+	str.WriteString(" ")
+	str.WriteString(node.Operator)
+	str.WriteString(" ")
+	str.WriteString(node.Right.String())
+	str.WriteString(")")
+
+	return str.String()
+}
+func (node *InfixExpressionNode) expressionNode() {}
