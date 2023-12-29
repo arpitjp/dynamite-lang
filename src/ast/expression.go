@@ -1,6 +1,9 @@
 package ast
 
-import "dynamite/src/tokens"
+import (
+	"dynamite/src/tokens"
+	"strings"
+)
 
 type IdentifierExpNode struct {
 	Token tokens.Token
@@ -27,3 +30,24 @@ func (node *IntegerExpressionNode) String() string {
 	return node.TokenLiteral()
 }
 func (node *IntegerExpressionNode) expressionNode() {}
+
+type PrefixExpressionNode struct {
+	Token tokens.Token // the prefix token, e.g. !
+	Operator string
+	Right Expression
+}
+
+func (node *PrefixExpressionNode) TokenLiteral() string {
+	return node.Token.Literal
+}
+func (node *PrefixExpressionNode) String() string {
+	var str strings.Builder
+
+	str.WriteString("(")
+	str.WriteString(node.Operator)
+	str.WriteString(node.Right.String())
+	str.WriteString(")")
+	
+	return str.String()
+}
+func (node *PrefixExpressionNode) expressionNode() {}

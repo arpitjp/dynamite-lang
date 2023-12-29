@@ -31,6 +31,7 @@ const (
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefixFn := p.prefixParseFns[p.currToken.Type]
 	if prefixFn == nil {
+		p.parsingError(fmt.Sprintf("prefix function not found for %q", p.currToken.Type), p.currToken)
 		return nil
 	}
 	leftExp := prefixFn()
@@ -46,7 +47,7 @@ func (p *Parser) parseIdentifierExpression() ast.Expression {
 	}
 }
 
-func (p *Parser) parseIntegerExpressionNode() ast.Expression {
+func (p *Parser) parseIntegerExpression() ast.Expression {
 	node := &ast.IntegerExpressionNode{
 		Token: p.currToken,
 	}
@@ -57,5 +58,15 @@ func (p *Parser) parseIntegerExpressionNode() ast.Expression {
 	}
 
 	node.Value = no
+	return node
+}
+
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	node := &ast.PrefixExpressionNode{
+		Token: p.currToken,
+	}
+	node.Operator = node.TokenLiteral()
+	p.NextToken()
+	node.Right = p.parseExpression(PREFIX)
 	return node
 }

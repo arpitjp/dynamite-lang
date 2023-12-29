@@ -9,3 +9,8 @@ run:
 
 test:
 	go test ./...
+
+push:
+	git add .
+	git commit -m "$(m)"
+	git push origin

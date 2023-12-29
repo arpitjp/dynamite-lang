@@ -9,26 +9,28 @@ import (
 )
 
 type Parser struct {
-	l *lexer.Lexer
+	l         *lexer.Lexer
 	currToken tokens.Token
 	peekToken tokens.Token
-	errors []string
+	errors    []string
 	// pratt parser
 	// Rule: they start with their token and end with their token
 	prefixParseFns map[tokens.TokenType]prefixParseFn
-	infixParseFnx map[tokens.TokenType]infixParseFn
+	infixParseFnx  map[tokens.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p :=  &Parser{
-		l: l,
+	p := &Parser{
+		l:              l,
 		prefixParseFns: make(map[tokens.TokenType]prefixParseFn),
-		infixParseFnx: make(map[tokens.TokenType]infixParseFn),
+		infixParseFnx:  make(map[tokens.TokenType]infixParseFn),
 	}
 
 	// registering functions
 	p.registerPrefixParseFn(tokens.IDENT, p.parseIdentifierExpression)
-	p.registerPrefixParseFn(tokens.INT, p.parseIntegerExpressionNode)
+	p.registerPrefixParseFn(tokens.INT, p.parseIntegerExpression)
+	p.registerPrefixParseFn(tokens.BANG, p.parsePrefixExpression)
+	p.registerPrefixParseFn(tokens.MINUS, p.parsePrefixExpression)
 
 	// initializing both currToken and nextToken
 	p.NextToken()
@@ -38,7 +40,7 @@ func New(l *lexer.Lexer) *Parser {
 }
 
 // Creates root program node
-func (p *Parser)ParseProgram() *ast.Program {
+func (p *Parser) ParseProgram() *ast.Program {
 	programNode := &ast.Program{}
 
 	for p.currToken.Type != tokens.EOF {
@@ -52,7 +54,7 @@ func (p *Parser)ParseProgram() *ast.Program {
 	return programNode
 }
 
-func(p *Parser) NextToken() {
+func (p *Parser) NextToken() {
 	p.currToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 }
