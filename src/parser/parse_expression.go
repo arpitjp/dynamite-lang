@@ -19,11 +19,14 @@ func (p *Parser) registerInfixParseFn(tok tokens.TokenType, f infixParseFn) {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
+	defer untrace(trace())
+
 	prefixFn := p.prefixParseFns[p.currToken.Type]
 	if prefixFn == nil {
 		p.parsingError(fmt.Sprintf("prefix function not found for %q", p.currToken.Type), p.currToken)
 		return nil
 	}
+
 	leftExp := prefixFn()
 
 	for p.peekToken.Type != tokens.SEMICOLON && precedence < p.peekPrecedence() {
@@ -40,6 +43,8 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 
 // -------------
 func (p *Parser) parseIdentifierExpression() ast.Expression {
+	defer untrace(trace())
+
 	return &ast.IdentifierExpNode{
 		Token: p.currToken,
 		Value: p.currToken.Literal,
@@ -47,6 +52,8 @@ func (p *Parser) parseIdentifierExpression() ast.Expression {
 }
 
 func (p *Parser) parseIntegerExpression() ast.Expression {
+	defer untrace(trace())
+
 	node := &ast.IntegerExpressionNode{
 		Token: p.currToken,
 	}
@@ -61,6 +68,8 @@ func (p *Parser) parseIntegerExpression() ast.Expression {
 }
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
+	defer untrace(trace())
+
 	node := &ast.PrefixExpressionNode{
 		Token: p.currToken,
 	}
@@ -71,10 +80,12 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	defer untrace(trace())
+	
 	node := &ast.InfixExpressionNode{
-		Token: p.currToken,
+		Token:    p.currToken,
 		Operator: p.currToken.Literal,
-		Left: left,
+		Left:     left,
 	}
 	precedence := p.currPrecedence()
 	p.NextToken()

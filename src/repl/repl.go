@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"dynamite/src/lexer"
 	"dynamite/src/logger"
-	"dynamite/src/tokens"
+	"dynamite/src/parser"
 	"fmt"
 	"log"
 	"os"
@@ -12,9 +12,8 @@ import (
 
 func runString(s string) {
 	l := lexer.New(s)
-	for tok := l.NextToken(); tok.Type != tokens.EOF; tok = l.NextToken() {
-		tok.Inspect()
-	}
+	p := parser.New(l)
+	p.ParseProgram()
 }
 
 func fileMode() {
@@ -34,7 +33,7 @@ func replMode() {
 	fmt.Print("\nWelcome to Dynamite REPL 👋\n\n")
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		fmt.Printf(PROMT)
+		fmt.Print(PROMT)
 		scanned := scanner.Scan()
 		if !scanned {
 			return

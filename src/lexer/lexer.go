@@ -12,21 +12,21 @@ import (
 )
 
 type Lexer struct {
-	input utf8string.String
-	position int
+	input        utf8string.String
+	position     int
 	nextPosition int
-	ch rune
-	str string
+	ch           rune
+	str          string
 	// meta
-	ln int // updated by eatWhitespace()
+	ln  int // updated by eatWhitespace()
 	col int // updated by readChar()
 }
 
 func New(input string) *Lexer {
-	cleanInput := strings.Replace(input, "\t", env.Getenv(env.ROCKET_TAB_WIDTH), -1)
+	cleanInput := strings.Replace(input, "\t", env.Getenv(env.DYNAMITE_TAB_WIDTH), -1)
 	l := &Lexer{
 		input: *utf8string.NewString(cleanInput),
-		ln: 1,
+		ln:    1,
 	}
 	l.readChar()
 	return l
@@ -44,14 +44,14 @@ func (l *Lexer) readChar() {
 	l.col++
 }
 
-func(l *Lexer) peekChar() rune {
+func (l *Lexer) peekChar() rune {
 	if l.nextPosition < l.input.RuneCount() {
 		return l.input.At(l.nextPosition)
 	}
 	return constants.NULL_CHAR
 }
 
-func(l *Lexer) eatWhitespace() {
+func (l *Lexer) eatWhitespace() {
 	for l.ch == '\n' || l.ch == '\t' || l.ch == ' ' || l.ch == '\r' {
 		if l.ch == '\n' {
 			l.ln++
@@ -61,16 +61,16 @@ func(l *Lexer) eatWhitespace() {
 	}
 }
 
-func(l *Lexer) createToken(tokenType tokens.TokenType, literal string) tokens.Token {
+func (l *Lexer) createToken(tokenType tokens.TokenType, literal string) tokens.Token {
 	return tokens.Token{
-		Type: tokenType,
+		Type:    tokenType,
 		Literal: literal,
-		Col: l.col,
-		Ln: l.ln,
+		Col:     l.col,
+		Ln:      l.ln,
 	}
 }
 
-func(l *Lexer) parseNumber() string {
+func (l *Lexer) parseNumber() string {
 	s := ""
 	for isDigit(l.ch) {
 		s += string(l.ch)
@@ -82,7 +82,7 @@ func(l *Lexer) parseNumber() string {
 	return s
 }
 
-func(l *Lexer) parseLiteral() string {
+func (l *Lexer) parseLiteral() string {
 	s := ""
 	for isLetter(l.ch) {
 		s += string(l.ch)
@@ -98,7 +98,7 @@ func (l *Lexer) NextToken() tokens.Token {
 	var tok tokens.Token
 	l.eatWhitespace()
 
-	switch(l.ch) {
+	switch l.ch {
 	// single char tokens
 	case constants.NULL_CHAR:
 		tok = l.createToken(tokens.EOF, "")
@@ -197,6 +197,7 @@ func (l *Lexer) NextToken() tokens.Token {
 		}
 	}
 	l.readChar()
+	tok.Inspect()
 	return tok
 }
 

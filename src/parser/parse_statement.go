@@ -6,6 +6,8 @@ import (
 )
 
 func (p *Parser) parseStatement() ast.Statement {
+	defer untrace(trace())
+	
 	var stmt ast.Statement
 	switch p.currToken.Type {
 	case tokens.LET:
@@ -19,6 +21,8 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
+	defer untrace(trace())
+
 	node := &ast.LetStatement{Token: p.currToken}
 
 	// identifier token
@@ -45,6 +49,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	defer untrace(trace())
+
 	node := &ast.ReturnStatement{Token: p.currToken}
 
 	p.NextToken()
@@ -58,6 +64,8 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 }
 
 func (p *Parser) parseExpressionStatements() *ast.ExpressionStatement {
+	defer untrace(trace())
+
 	stmt := &ast.ExpressionStatement{ Token: p.currToken }
 
 	stmt.Expression = p.parseExpression(LOWEST)

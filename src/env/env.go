@@ -5,11 +5,15 @@ import "os"
 type rocketEnvVar string
 
 const (
-	ROCKET_TAB_WIDTH rocketEnvVar = "ROCKET_TAB_WIDTH"
+	DYNAMITE_TAB_WIDTH rocketEnvVar = "DYNAMITE_TAB_WIDTH"
+	DYNAMITE_PARSER_TRACING_ENABLED rocketEnvVar = "DYNAMITE_PARSER_TRACING"
+	DYNAMITE_LEXER_INSPECT_TOKESN rocketEnvVar = "DYNAMITE_LEXER_INSPECT_TOKESN"
 )
 
 var defaultValues = map[rocketEnvVar]string{
-	ROCKET_TAB_WIDTH: "    ", // 1 tab = 4 spaces
+	DYNAMITE_TAB_WIDTH: "    ", // 1 tab = 4 spaces
+	DYNAMITE_PARSER_TRACING_ENABLED: "",
+	DYNAMITE_LEXER_INSPECT_TOKESN: "d",
 }
 
 func Getenv(key rocketEnvVar) string {

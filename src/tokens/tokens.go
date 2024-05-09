@@ -1,6 +1,9 @@
 package tokens
 
-import "fmt"
+import (
+	"dynamite/src/env"
+	"fmt"
+)
 
 type TokenType string
 
@@ -12,6 +15,9 @@ type Token struct {
 }
 
 func (tok *Token) Inspect() {
+	if env.Getenv(env.DYNAMITE_LEXER_INSPECT_TOKESN) == "" {
+		return
+	}
 	fmt.Printf("%d:%d\t%s (%s)\n", tok.Ln, tok.Col, tok.Type, tok.Literal)
 }
 
